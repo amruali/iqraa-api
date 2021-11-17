@@ -7,7 +7,7 @@ import (
 	"iqraa-api/postgres"
 	"log"
 	"net/http"
-
+	"os"
 	"github.com/go-pg/pg/v9"
 )
 
@@ -39,7 +39,7 @@ func main() {
 
 	r := handlers.SetupRouter(d)
 
-	err = http.ListenAndServe(fmt.Sprintf(":%s", "8080"), r)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), r)
 	if err != nil {
 		log.Fatalf("cannot start server %v", err)
 	}
