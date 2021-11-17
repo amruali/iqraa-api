@@ -18,9 +18,9 @@ func favHandler(next http.Handler) http.Handler {
 }
 
 func (s *Server) setupEndpoints(router *chi.Mux) {	
-	router.Route("", func(router chi.Router){
+	router.Route("/", func(router chi.Router){
 		router.Use(favHandler);
-		router.Get("/", func(w http.ResponseWriter, r *http.Request) {
+		router.Get("/home", func(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode("Ok")
 		})
 		router.Route("/api", func(router chi.Router) {
