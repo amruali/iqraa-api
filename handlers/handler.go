@@ -23,7 +23,7 @@ func setupMiddleware(r *chi.Mux) {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.URLFormat)
-	r.Use(middleware.Timeout(60 * time.Second))
+	r.Use(middleware.Timeout(120 * time.Second))
 }
 
 func SetupRouter(domain *domain.Domain) *chi.Mux {
