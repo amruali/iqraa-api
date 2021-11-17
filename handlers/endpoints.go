@@ -18,18 +18,12 @@ func favHandler(next http.Handler) http.Handler {
 }
 
 func (s *Server) setupEndpoints(router *chi.Mux) {	
-	router.Route("/", func(router chi.Router){
-		router.Use(favHandler);
-		router.Get("/home", func(w http.ResponseWriter, r *http.Request) {
-			json.NewEncoder(w).Encode("Ok")
+	router.Route("/api/v1", func(router chi.Router){
+		router.Route("/users", func(r chi.Router) {
+			router.Get("/", s.SampleUser)
+			r.Post("/login", s.Login())
+			r.Post("/register", s.Register())
 		})
-		router.Route("/api", func(router chi.Router) {
-			router.Route("/users", func(r chi.Router) {
-				//router.Get("/", s.SampleUser)
-				r.Post("/login", s.Login())
-				r.Post("/register", s.Register())
-			})
 	
-		})
 	})
 }
