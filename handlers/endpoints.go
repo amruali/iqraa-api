@@ -9,7 +9,10 @@ import (
 
 func favHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.WriteHeader(http.StatusNoContent)
+		if r.path == "/favicon.ico"{
+			w.WriteHeader(http.StatusNoContent)
+			next.ServeHTTP(w, r)
+		}
 		next.ServeHTTP(w, r)
 	})
 }
