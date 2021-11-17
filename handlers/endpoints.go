@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/go-chi/chi"
+	"net/http"
 )
 
 func (s *Server) setupEndpoints(router *chi.Mux) {
