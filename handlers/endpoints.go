@@ -8,6 +8,9 @@ import (
 
 func (s *Server) setupEndpoints(router *chi.Mux) {
 	
+	router.Get("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, "../static/favicon.ico")
+	})
 	router.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode("Ok")
 	})
