@@ -1,11 +1,11 @@
 package handlers
 
 import (
-	"github.com/go-chi/chi"
-	_"encoding/json"
+	_ "encoding/json"
 	"net/http"
-)
 
+	"github.com/go-chi/chi"
+)
 
 func favHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -17,13 +17,20 @@ func favHandler(next http.Handler) http.Handler {
 	})
 }
 
-func (s *Server) setupEndpoints(router *chi.Mux) {	
-	router.Route("/api/v1", func(router chi.Router){
+func (s *Server) setupEndpoints(router *chi.Mux) {
+	router.Route("/api/v1", func(router chi.Router) {
+		router.Get("/", s.SampleUser) // test
+
+		// user-group
 		router.Route("/users", func(r chi.Router) {
-			router.Get("/", s.SampleUser)
 			r.Post("/login", s.Login())
 			r.Post("/register", s.Register())
 		})
-	
+
+		// book-group
+		router.Route("/books", func(r chi.Router) {
+			r.Post("/new", s.)
+		})
+
 	})
 }

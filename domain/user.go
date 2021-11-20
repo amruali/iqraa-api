@@ -15,6 +15,9 @@ type User struct {
 	UserTypeID     int8      `json:"user_type_id"`
 	CreatedAt      time.Time `json:"created_at"`
 	UpdatedAt      time.Time `json:"updated_at"`
+	FirstName      string    `json:"first_name"`
+	LastName       string    `json:"last_name"`
+	Image          string    `json:"image"`
 }
 
 type JwtToken struct {

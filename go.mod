@@ -11,4 +11,5 @@ require (
 	github.com/gofiber/fiber v1.14.6
 	github.com/lib/pq v1.10.4
 	golang.org/x/crypto v0.0.0-20200820211705-5c72a883971a
+	google.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013
 )

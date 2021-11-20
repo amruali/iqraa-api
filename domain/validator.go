@@ -1,5 +1,7 @@
 package domain
 
+import "net/mail"
+
 type Validator struct {
 	errors map[string]string
 }
@@ -32,6 +34,20 @@ func (v *Validator) MustBeLongerThan(field, value string, high int) bool {
 	return true
 }
 
+func (v *Validator) MustBeValidYear(field string, value int) bool {
+	if _, ok := v.errors[field]; ok {
+		return false
+	}
+
+	if !(value > 0 && value < 2022) {
+		v.errors[field] = ErrIsRequired{
+			field: field,
+		}.Error()
+		return false
+	}
+	return true
+}
+
 func (v *Validator) MustBeNotEmpty(field, value string) bool {
 	if _, ok := v.errors[field]; ok {
 		return false
@@ -46,6 +62,15 @@ func (v *Validator) MustBeNotEmpty(field, value string) bool {
 }
 
 func (v *Validator) MustBeValidEmail(field, email string) bool {
+	if _, ok := v.errors[field]; ok {
+		return false
+	}
+
+	_, err := mail.ParseAddress(email)
+	if err != nil {
+		v.errors[field] = ErrEmailIsNotValid.Error()
+		return false
+	}
 	return true
 }
 

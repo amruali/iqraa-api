@@ -11,6 +11,8 @@ type RegisterPayload struct {
 	Password        string `json:"password"`
 	ConfirmPassword string `json:"confirm_password"`
 	Username        string `json:"username"`
+	FirstName       string `json:"first_name"`
+	LastName        string `json:"last_name"`
 }
 
 func (payload *RegisterPayload) IsValid() (bool, map[string]string) {
@@ -21,6 +23,12 @@ func (payload *RegisterPayload) IsValid() (bool, map[string]string) {
 
 	v.MustBeNotEmpty("username", payload.Username)
 	v.MustBeLongerThan("username", payload.Username, 4)
+
+	v.MustBeNotEmpty("first_name", payload.FirstName)
+	v.MustBeLongerThan("first_name", payload.FirstName, 3)
+
+	v.MustBeNotEmpty("last_name", payload.LastName)
+	v.MustBeLongerThan("last_name", payload.LastName, 3)
 
 	v.MustBeNotEmpty("password", payload.Password)
 	v.MustBeLongerThan("password", payload.Password, 8)

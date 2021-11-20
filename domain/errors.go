@@ -11,6 +11,8 @@ var (
 	ErrUserWithEmailAlreadyAlreadyExist = errors.New("user with email already exist")
 	ErrUserWithUsernameAlreadyExist     = errors.New("user with username already exist")
 	ErrInvalidCredentials               = errors.New("username or password are not correct")
+	ErrEmailIsNotValid                  = errors.New("email is not valid")
+	ErrBookIsAlreadyExist               = errors.New("book is already exist")
 )
 
 type (
