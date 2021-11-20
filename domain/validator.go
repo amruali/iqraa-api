@@ -34,12 +34,12 @@ func (v *Validator) MustBeLongerThan(field, value string, high int) bool {
 	return true
 }
 
-func (v *Validator) MustBeValidYear(field string, value int) bool {
+func (v *Validator) MustBeValidYear(field string, value int32) bool {
 	if _, ok := v.errors[field]; ok {
 		return false
 	}
 
-	if !(value > 0 && value < 2022) {
+	if value < 0 || value > 2022 {
 		v.errors[field] = ErrIsRequired{
 			field: field,
 		}.Error()

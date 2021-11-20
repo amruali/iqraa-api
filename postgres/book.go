@@ -15,7 +15,22 @@ func NewBookRepo(DB *pg.DB) *BookRepo {
 	return &BookRepo{DB: DB}
 }
 
-func (b *BookRepo) Create(book *domain.Book) (*domain.Book, error) {
+func (b *BookRepo) Create( /*name, isbn string, year int32*/ book *domain.Book) (*domain.Book, error) {
+	/*
+		book := &domain.Book{
+			BookName:         name,
+			ISBN:             isbn,
+			PublishYear:      year,
+			PublisherID:      1,
+			BookTypeID:       1,
+			BookTypeDetailID: 1,
+			BookAuthorID:     1,
+			CreateUserID:     1,
+			UpdateUserID:     1,
+			CreatedAt:        time.Now(),
+			UpdatedAt:        time.Now(),
+		}
+	*/
 	_, err := b.DB.Model(book).Returning("*").Insert()
 	if err != nil {
 		return nil, err
@@ -23,7 +38,7 @@ func (b *BookRepo) Create(book *domain.Book) (*domain.Book, error) {
 	return book, nil
 }
 
-func (b *BookRepo) GetByBookName(BookName string) (*domain.Book, error) {
+func (b *BookRepo) GetByName(BookName string) (*domain.Book, error) {
 	book := &domain.Book{}
 	err := b.DB.Model(book).Where("book_name = ?", BookName).First()
 	if err != nil {

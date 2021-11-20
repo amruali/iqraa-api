@@ -29,7 +29,7 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 
 		// book-group
 		router.Route("/books", func(r chi.Router) {
-			r.Post("/new", s.)
+			r.Post("/new", s.CreateBook())
 		})
 
 	})

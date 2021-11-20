@@ -9,11 +9,11 @@ type UserRepo interface {
 
 type BookRepo interface {
 	//GetByID(id int64) (*Book, error)
-
 	//GetByAuthorID(AuthorID int64)([]Book, error)
 	GetByISBN(isbn string) (*Book, error)
 	GetByName(bookName string) (*Book, error)
 	Create(book *Book) (*Book, error)
+	//Create(name, isbn string, year int32) (*Book, error)
 }
 
 type AuthorRepo interface {
