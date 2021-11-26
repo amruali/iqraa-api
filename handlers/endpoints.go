@@ -19,7 +19,7 @@ func favHandler(next http.Handler) http.Handler {
 
 func (s *Server) setupEndpoints(router *chi.Mux) {
 	router.Route("/api/v1", func(router chi.Router) {
-		router.Get("/", s.SampleUser) // test
+		router.Get("/", s.SampleAllUserBooks) // test
 
 		// user-group
 		router.Route("/users", func(r chi.Router) {

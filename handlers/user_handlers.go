@@ -7,18 +7,18 @@ import (
 	"net/http"
 )
 
-func (s *Server) SampleUser(w http.ResponseWriter, r *http.Request) {
-	user, err := s.domain.DB.UserRepo.GetByID(1)
+func (s *Server) SampleAllUserBooks(w http.ResponseWriter, r *http.Request) {
+	books, err := s.domain.DB.BookRepo.GetByPublisherName("القمري")
 
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println(err, 1)
 	}
 
-	fmt.Println(user)
+	fmt.Println(books, 2)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
-	json.NewEncoder(w).Encode(user.Email)
+	json.NewEncoder(w).Encode(books)
 }
 
 func (s *Server) Register() http.HandlerFunc {

@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"errors"
+
 	"iqraa-api/domain"
 
 	"github.com/go-pg/pg/v9"
@@ -62,3 +63,131 @@ func (b *BookRepo) GetByISBN(isbn string) (*domain.Book, error) {
 	}
 	return book, nil
 }
+
+// Get Books By Author Name
+func (b *BookRepo) GetByAuthorName(authorName string) ([]domain.Book, error) {
+	books := []domain.Book{}
+	err := b.DB.Model(&books).
+		ColumnExpr("book.*").
+		//ColumnExpr("a.id AS author__id, a.full_name AS author__name").
+		Join("JOIN authors a"). 
+		JoinOn("a.id = book.book_author_id").
+		JoinOn("a.full_name = ?", authorName).
+		Select()
+	if err != nil {
+		if errors.Is(err, pg.ErrNoRows) {
+			return nil, domain.ErrNoResult
+		}
+		return nil, err
+	}
+	return books, nil
+}
+
+// Get Books By Author ID
+func (b *BookRepo) GetByAuthorID(AuthorID int32) ([]domain.Book, error) {
+	books := []domain.Book{}
+	err := b.DB.Model(&books).Where("book_author_id = (?)", AuthorID).Select()
+	if err != nil {
+		if errors.Is(err, pg.ErrNoRows) {
+			return nil, domain.ErrNoResult
+		}
+		return nil, err
+	}
+	return books, nil
+}
+
+// Get Books By Publisher ID
+func (b *BookRepo) GetByPublisherID(PublisherID int32) ([]domain.Book, error) {
+	books := []domain.Book{}
+	err := b.DB.Model(&books).Where("publisher_id IN (?)", PublisherID).Select()
+	if err != nil {
+		if errors.Is(err, pg.ErrNoRows) {
+			return nil, domain.ErrNoResult
+		}
+		return nil, err
+	}
+	return books, nil
+}
+
+// Get Books Published In Specific Year
+func (b *BookRepo) GetByYear(year int32) ([]domain.Book, error) {
+	books := []domain.Book{}
+	err := b.DB.Model(&books).Where("publish_year = (?)", year).Select()
+	if err != nil {
+		if errors.Is(err, pg.ErrNoRows) {
+			return nil, domain.ErrNoResult
+		}
+		return nil, err
+	}
+	return books, nil
+}
+
+
+// Get Books By Publisher Name
+func (b *BookRepo) GetByPublisherName(PublisherName string) ([]domain.Book, error) {
+	books := []domain.Book{}
+	err := b.DB.Model(&books).
+		ColumnExpr("book.*").
+		//ColumnExpr("a.id AS author__id, a.full_name AS author__name").
+		Join("JOIN publisher p"). 
+		JoinOn("p.publisher_id = book.publisher_id").
+		JoinOn("p.publishing_house_name = ?", PublisherName).
+		Select()
+	if err != nil {
+		if errors.Is(err, pg.ErrNoRows) {
+			return nil, domain.ErrNoResult
+		}
+		return nil, err
+	}
+	return books, nil
+}
+
+
+/*
+// Get Books Between two years
+func (b *BookRepo) GetByEra(from, to int32) ([]*domain.Book, error) {
+
+}
+
+
+
+// Get Books By Type ID
+// Get Books By Type Detail ID
+func (b *BookRepo) GetByTypeAndTypeDetail(typeID, typeDetailID int32) ([]*domain.Book, error) {
+	query := ""
+	if typeID != -1 {
+		query += ""
+	}
+	if typeDetailID != -1 {
+		query += ""
+	}
+
+}
+
+/*
+// Get Top sorted descending Downloadable #N Books
+func(b *BookRepo) GetByMostDownloadable(count int)([]*domain.Book, error){
+	if count == -1 {
+		count = 5
+	}
+}
+*/
+// Get Most Downloadable Book for Specific Author
+// Get #N top Highest reviewed Books
+// Get Reviews For Specific Book (Book_ID)
+// Get #N top Books Based ON Specific User Prefer
+// Get #N top Newest Books
+// Get #N top Books These Days
+
+// Remember this made select more than one works
+
+/*
+//book := &domain.Book{}
+	books := []domain.Book{}
+
+	//YearBooks := b.DB.Model(book).ColumnExpr("publish_year").Where("publish_year = ?", 1)
+	//err := b.DB.Model(&books).Where("publish_year IN (?)", YearBooks).Select()
+
+*/
+
+//https://pg.uptrace.dev/queries/
