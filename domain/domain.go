@@ -8,6 +8,8 @@ type UserRepo interface {
 }
 
 type BookRepo interface {
+	GetByMostDownloadable(count int) ([]Book, error)
+	GetByEra(from, to int32) ([]Book, error)
 	GetByPublisherName(PublisherName string) ([]Book, error)
 	GetByAuthorName(authorName string) ([]Book, error)
 	GetByAuthorID(AuthorID int32) ([]Book, error)
@@ -24,10 +26,13 @@ type AuthorRepo interface {
 	Create(author *Author) (*Author, error)
 }
 
+type ReviewRepo interface {
+}
 type DB struct {
 	UserRepo   UserRepo
 	BookRepo   BookRepo
 	AuthorRepo AuthorRepo
+	ReviewRepo ReviewRepo
 }
 
 type Domain struct {

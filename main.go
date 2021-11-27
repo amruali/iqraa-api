@@ -33,6 +33,7 @@ func main() {
 		UserRepo:   postgres.NewUserRepo(DB),
 		BookRepo:   postgres.NewBookRepo(DB),
 		AuthorRepo: postgres.NewAuthorRepo(DB),
+		ReviewRepo: postgres.NewReviewRepo(DB),
 	}
 
 	d := &domain.Domain{DB: domainDB}
