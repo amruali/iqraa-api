@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	opt, err := pg.ParseURL("postgres://bwwcpfkcjqlryj:cea72a035fa5703fedd068c69c662dac0bc1e3adef04d58208670f3f06a7f0b3@ec2-54-225-228-142.compute-1.amazonaws.com:5432/d8o2ts9ueunerh")
+	opt, err := pg.ParseURL(os.Getenv("DB_URI"))
 	if err != nil {
 		panic(err)
 	}
@@ -31,12 +31,12 @@ func main() {
 	defer DB.Close()
 
 	domainDB := domain.DB{
-		UserRepo:   postgres.NewUserRepo(DB),
-		BookRepo:   postgres.NewBookRepo(DB),
-		AuthorRepo: postgres.NewAuthorRepo(DB),
-		ReviewRepo: postgres.NewReviewRepo(DB),
-		QuoteRepo:  postgres.NewQuoteRepo(DB),
-		StatisticsRepo : postgres.NewStatisticsRepo(DB),
+		UserRepo:       postgres.NewUserRepo(DB),
+		BookRepo:       postgres.NewBookRepo(DB),
+		AuthorRepo:     postgres.NewAuthorRepo(DB),
+		ReviewRepo:     postgres.NewReviewRepo(DB),
+		QuoteRepo:      postgres.NewQuoteRepo(DB),
+		StatisticsRepo: postgres.NewStatisticsRepo(DB),
 	}
 
 	d := &domain.Domain{DB: domainDB}
