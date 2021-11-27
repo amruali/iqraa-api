@@ -55,9 +55,9 @@ func (r *ReviewRepo) GetByBookName(bookName string) ([]domain.Review, error) {
 	err := r.DB.Model(&reviews).
 		ColumnExpr("review.*").
 		//ColumnExpr("a.id AS author__id, a.full_name AS author__name").
-		Join("JOIN books b"). 
+		Join("JOIN books b").
 		JoinOn("b.book_id = review.book_id").
-		JoinOn("a.name = ?", bookName).
+		JoinOn("b.book_name = ?", bookName).
 		Select()
 	if err != nil {
 		return nil, err
@@ -69,11 +69,10 @@ func (r *ReviewRepo) GetByBookName(bookName string) ([]domain.Review, error) {
 func (r *ReviewRepo) GetByUserID(userID int32) ([]domain.Review, error) {
 	reviews := []domain.Review{}
 	err := r.DB.Model(&reviews).
-		Where("create_user_id = ?", userID).
+		Where("create_user_id = (?)", userID).
 		Select()
 	if err != nil {
 		return nil, err
 	}
 	return reviews, nil
 }
-

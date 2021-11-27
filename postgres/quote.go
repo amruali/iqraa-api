@@ -27,7 +27,7 @@ func (q *QuoteRepo) Create(quote *domain.Quote) (*domain.Quote, error) {
 func (q *QuoteRepo) GetByID(quoteID uint32) (*domain.Quote, error) {
 	quote := &domain.Quote{}
 	err := q.DB.Model(quote).
-		Where("quote_id = ?", quoteID).
+		Where("id = ?", quoteID).
 		Select()
 
 	if err != nil {
