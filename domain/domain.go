@@ -8,7 +8,6 @@ type UserRepo interface {
 }
 
 type BookRepo interface {
-	GetByMostDownloadable(count int) ([]Book, error)
 	GetByEra(from, to int32) ([]Book, error)
 	GetByPublisherName(PublisherName string) ([]Book, error)
 	GetByAuthorName(authorName string) ([]Book, error)
@@ -27,12 +26,30 @@ type AuthorRepo interface {
 }
 
 type ReviewRepo interface {
+	Create(review *Review) (*Review, error)
+	GetByID(reviewID int32) (*Review, error)
+	GetByBookID(bookID int32) ([]Review, error)
+	GetByBookName(bookName string) ([]Review, error)
+	GetByUserID(userID int32) ([]Review, error)
 }
+
+type StatisticsRepo interface {
+	GetByMostDownloadable(count int) ([]Book, error)
+}
+
+type QuoteRepo interface {
+	Create(quote *Quote) (*Quote, error)
+	GetByID(quoteID uint32) (*Quote, error)
+	GetByBookID(quoteID uint32) ([]Quote, error)
+}
+
 type DB struct {
-	UserRepo   UserRepo
-	BookRepo   BookRepo
-	AuthorRepo AuthorRepo
-	ReviewRepo ReviewRepo
+	UserRepo       UserRepo
+	BookRepo       BookRepo
+	AuthorRepo     AuthorRepo
+	ReviewRepo     ReviewRepo
+	StatisticsRepo StatisticsRepo
+	QuoteRepo      QuoteRepo
 }
 
 type Domain struct {

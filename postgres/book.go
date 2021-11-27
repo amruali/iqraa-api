@@ -176,36 +176,6 @@ func (b *BookRepo) GetByTypeAndTypeDetail(typeID, typeDetailID int32) ([]*domain
 }
 */
 
-// Get Top sorted descending Downloadable #N Books
-func(b *BookRepo) GetByMostDownloadable(count int)([]domain.Book, error){
-	if count == -1 {
-		count = 5
-	}
-	books := []domain.Book{}
-	err := b.DB.Model(&books).
-		Order("downloads_number DESC").
-		Limit(count).
-		Select()
-	if err != nil {
-		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
-		}
-		return nil, err
-	}
-	return books, nil
-}
-
-
-
-// Get Most Downloadable Book for Specific Author
-// Get #N top Highest reviewed Books
-// Get Reviews For Specific Book (Book_ID)
-// Get #N top Books Based ON Specific User Prefer
-// Get #N top Newest Books
-// Get #N top Books These Days
-
-// Remember this made select more than one works
-
 /*
 //book := &domain.Book{}
 	books := []domain.Book{}

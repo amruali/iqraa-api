@@ -8,7 +8,7 @@ import (
 )
 
 func (s *Server) SampleAllUserBooks(w http.ResponseWriter, r *http.Request) {
-	books, err := s.domain.DB.BookRepo.GetByMostDownloadable(2)
+	books, err := s.domain.DB.StatisticsRepo.GetByMostDownloadable(2)
 
 	if err != nil {
 		fmt.Println(err, 1)
