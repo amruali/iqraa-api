@@ -43,7 +43,7 @@ func main() {
 
 	r := handlers.SetupRouter(d)
 
-	err = http.ListenAndServe(fmt.Sprintf(":%s", "8080" /*os.Getenv("PORT")*/), r)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", /*"8080"*/ os.Getenv("PORT")), r)
 	if err != nil {
 		log.Fatalf("cannot start server %v", err)
 	}
