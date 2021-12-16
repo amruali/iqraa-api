@@ -31,12 +31,12 @@ func main() {
 	defer DB.Close()
 
 	domainDB := domain.DB{
-		UserRepo:   postgres.NewUserRepo(DB),
-		BookRepo:   postgres.NewBookRepo(DB),
-		AuthorRepo: postgres.NewAuthorRepo(DB),
-		ReviewRepo: postgres.NewReviewRepo(DB),
-		QuoteRepo:  postgres.NewQuoteRepo(DB),
-		StatisticsRepo : postgres.NewStatisticsRepo(DB),
+		UserRepo:       postgres.NewUserRepo(DB),
+		BookRepo:       postgres.NewBookRepo(DB),
+		AuthorRepo:     postgres.NewAuthorRepo(DB),
+		ReviewRepo:     postgres.NewReviewRepo(DB),
+		QuoteRepo:      postgres.NewQuoteRepo(DB),
+		StatisticsRepo: postgres.NewStatisticsRepo(DB),
 	}
 
 	d := &domain.Domain{DB: domainDB}
