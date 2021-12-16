@@ -6,6 +6,8 @@ import (
 	"net/http"
 )
 
+
+// Add Upload pdf file // Cover
 func (s *Server) CreateBook() http.HandlerFunc {
 	var payload domain.CreateBookPayload
 	return ValidatePayload(func(w http.ResponseWriter, r *http.Request) {
@@ -18,3 +20,12 @@ func (s *Server) CreateBook() http.HandlerFunc {
 		resposneWithJson(w, book, http.StatusCreated)
 	}, &payload)
 }
+
+
+// Update Book - Edit book info
+
+// Update Book URL
+
+// Upload New PDF Copy
+
+// Delete Book
