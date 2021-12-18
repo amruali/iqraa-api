@@ -10,9 +10,19 @@ import (
 	"os"
 
 	"github.com/go-pg/pg/v9"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+
+	// Load the .env file in the current directory
+	godotenv.Load()
+
+	// or
+
+	//godotenv.Load(".env")
+
 	opt, err := pg.ParseURL(os.Getenv("DB_URI"))
 	if err != nil {
 		panic(err)
