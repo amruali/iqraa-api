@@ -10,9 +10,19 @@ import (
 	"os"
 
 	"github.com/go-pg/pg/v9"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+
+
+	// Load the .env file in the current directory
+	godotenv.Load()
+
+	// or
+
+	//godotenv.Load(".env")
+
 	opt, err := pg.ParseURL(os.Getenv("DB_URI"))
 	if err != nil {
 		panic(err)
@@ -43,7 +53,7 @@ func main() {
 
 	r := handlers.SetupRouter(d)
 
-	err = http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), r)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", /*"8080"*/ os.Getenv("PORT")), r)
 	if err != nil {
 		log.Fatalf("cannot start server %v", err)
 	}
