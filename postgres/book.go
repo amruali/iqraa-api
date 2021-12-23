@@ -211,6 +211,7 @@ func (b *BookRepo) UpdateByID(book *domain.Book) error {
 		Set("book_type_detail_id = ?", book.BookTypeDetailID).
 		Set("update_user_id = ?", book.UpdateUserID).
 		Set("updated_at = ?", book.UpdatedAt).
+		Set("brief = ?", book.Brief).
 		Where("id = ?id").
 		Update()
 	if err != nil {
