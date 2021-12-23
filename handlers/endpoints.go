@@ -27,20 +27,16 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 			r.Post("/register", s.Register())
 		})
 
-		// book-group
+		// books-group
 		router.Route("/books", func(r chi.Router) {
 			r.Post("/", s.CreateBook())
-
+			r.Get("/", s.GetBook)
+			// Admin-Only
 			r.Route("/{book_id}", func(r chi.Router) {
-				//r.Use(s.GetBookFromCTX)
-				//r.Use(s.withOwner("todo"))
+				r.Use(s.IsAdmin)
 				r.Put("/", s.UpdateBook())
-				r.Get("/", s.GetBook)
 				r.Delete("/", s.DeleteBook())
-				//r.Patch("/", s.UpdateTodo())
-
 			})
-
 		})
 
 	})
