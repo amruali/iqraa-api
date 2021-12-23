@@ -26,8 +26,13 @@ func (s *Server) UpdateBook() http.HandlerFunc {
 	var payload domain.UpdateBookPayload
 	return ValidatePayload(func(w http.ResponseWriter, r *http.Request) {
 		bookID := chi.URLParam(r, "book_id")
-		id, _ := strconv.ParseInt(bookID, 10, 64)
-		err := s.domain.UpdateBook(payload, id)
+		id, err := strconv.ParseInt(bookID, 10, 64)
+
+		if err != nil {
+			resposneWithJson(w, map[string]string{"error": "book is not found"}, http.StatusNotFound)
+			return
+		}
+		err = s.domain.UpdateBook(payload, id)
 		if err != nil {
 			BadRequest(w, err)
 			return
