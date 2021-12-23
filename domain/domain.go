@@ -4,7 +4,7 @@ type UserRepo interface {
 	GetByID(id int64) (*User, error)
 	GetByUserName(username string) (*User, error)
 	GetByEmail(email string) (*User, error)
-	Create(email, username string, Password []byte) (*User, error)
+	Create(user *User) (*User, error)
 }
 
 type BookRepo interface {

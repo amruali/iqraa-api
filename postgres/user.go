@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"iqraa-api/domain"
-	"time"
 
 	"github.com/go-pg/pg/v9"
 )
@@ -67,16 +66,7 @@ func (u *UserRepo) GetByID(id int64) (*domain.User, error) {
 	return user, nil
 }
 
-func (u *UserRepo) Create(email, username string, password []byte) (*domain.User, error) {
-	user := &domain.User{
-		Email:          email,
-		Username:       username,
-		HashedPassword: password,
-		UserTypeID:     3,
-		CreatedAt:      time.Now(),
-		UpdatedAt:      time.Now(),
-	}
-
+func (u *UserRepo) Create(user *domain.User) (*domain.User, error) {
 	_, err := u.DB.Model(user).Returning("*").Insert()
 	if err != nil {
 		return nil, err
