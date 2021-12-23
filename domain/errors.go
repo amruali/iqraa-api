@@ -13,6 +13,7 @@ var (
 	ErrInvalidCredentials               = errors.New("username or password are not correct")
 	ErrEmailIsNotValid                  = errors.New("email is not valid")
 	ErrBookIsAlreadyExist               = errors.New("book is already exist")
+	ErrBookIsNotFound                   = errors.New("book is not found")
 )
 
 type (
