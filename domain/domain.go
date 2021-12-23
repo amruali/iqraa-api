@@ -16,6 +16,9 @@ type BookRepo interface {
 	GetByYear(year int32) ([]Book, error)
 	GetByISBN(isbn string) (*Book, error)
 	GetByName(bookName string) (*Book, error)
+	Delete(bookID int64) error
+	UpdateByID(book *Book) error
+	GetByID(bookID int64) (*Book, error)
 	Create(book *Book) (*Book, error)
 }
 
