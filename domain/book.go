@@ -37,11 +37,12 @@ type (
 		BookName         string `json:"book_name"`
 		HasISBN          bool   `json:"has_isbn"`
 		ISBN             string `json:"isbn"`
-		PublishYear      int32  `json:"publish_date"`
+		PublishYear      int32  `json:"publish_year"`
 		PublisherID      int32  `json:"publisher_id"`
 		BookTypeID       int32  `json:"book_type_id"`
 		BookTypeDetailID int32  `json:"book_type_detail_id"`
 		BookAuthorID     int32  `json:"book_author_id"`
+		Brief            string `json:"brief"`
 	}
 )
 
@@ -133,7 +134,7 @@ func (d *Domain) UpdateBook(payload UpdateBookPayload, bookID int64) error {
 		BookAuthorID:     payload.BookAuthorID,
 		UpdateUserID:     1,
 		UpdatedAt:        time.Now(),
-		Brief:            "100full",
+		Brief:            payload.Brief,
 	}
 
 	err := d.DB.BookRepo.UpdateByID(newbook)
