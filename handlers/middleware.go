@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"log"
 	"net/http"
 	"os"
 	"strings"
@@ -78,6 +79,19 @@ func (s *Server) IsAdmin(next http.Handler) http.Handler {
 		} else {
 			unAuthorizedResponse(w)
 			return
+		}
+	})
+}
+
+func (s *Server) IsCashed(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		books, err := s.domain.GetCashedTopDownloads()
+		if err == nil {
+			resposneWithJson(w, books, http.StatusOK)
+			return
+		} else {
+			log.Printf("redis failed to return data because %v", err)
+			next.ServeHTTP(w, r)
 		}
 	})
 }
