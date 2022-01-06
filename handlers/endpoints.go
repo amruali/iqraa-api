@@ -26,6 +26,14 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 	router.Route("/api/v1", func(router chi.Router) {
 		router.Get("/", s.SampleAllUserBooks) // test
 
+		// Statistical Data
+		router.Route("/statistical", func(r chi.Router) {
+			r.Route("/books", func(r chi.Router) {
+				r.Use(s.IsCashed)
+				r.Get("/top_downloads", s.TopDownloads())
+			})
+		})
+
 		// user-group
 		router.Route("/users", func(r chi.Router) {
 			r.Post("/login", s.Login())
