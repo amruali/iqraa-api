@@ -16,7 +16,7 @@ func NewStatisticsRepo(DB *pg.DB) *StatisticsRepo {
 }
 
 // Get Top sorted descending Downloadable #N Books
-func (s *StatisticsRepo) GetByMostDownloadable(count int) ([]domain.Book, error) {
+func (s *StatisticsRepo) GetByTopDownloaded(count int) ([]domain.Book, error) {
 	if count == -1 {
 		count = 5
 	}
