@@ -37,13 +37,24 @@ type ReviewRepo interface {
 }
 
 type StatisticsRepo interface {
-	GetByMostDownloadable(count int) ([]Book, error)
+	GetByTopDownloaded(count int) ([]Book, error)
 }
 
 type QuoteRepo interface {
 	Create(quote *Quote) (*Quote, error)
 	GetByID(quoteID uint32) (*Quote, error)
 	GetByBookID(quoteID uint32) ([]Quote, error)
+}
+
+// Next Redis DataInterfaces
+
+type RedisBooksRepo interface {
+	GetTopDownloads() (string, error)
+	SetTopDownloads(value string) error
+}
+
+type RedisDB struct {
+	RedisBooksRepo RedisBooksRepo
 }
 
 type DB struct {
@@ -56,5 +67,6 @@ type DB struct {
 }
 
 type Domain struct {
-	DB DB
+	DB      DB
+	RedisDB RedisDB
 }

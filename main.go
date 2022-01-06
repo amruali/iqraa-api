@@ -5,6 +5,7 @@ import (
 	"iqraa-api/domain"
 	"iqraa-api/handlers"
 	"iqraa-api/postgres"
+	"iqraa-api/redis"
 	"log"
 	"net/http"
 	"os"
@@ -15,7 +16,6 @@ import (
 
 func main() {
 
-
 	// Load the .env file in the current directory
 	godotenv.Load()
 
@@ -23,6 +23,7 @@ func main() {
 
 	//godotenv.Load(".env")
 
+	// Connet to Postgres DB
 	opt, err := pg.ParseURL(os.Getenv("DB_URI"))
 	if err != nil {
 		panic(err)
@@ -37,7 +38,6 @@ func main() {
 			panic(err)
 		}
 	*/
-
 	defer DB.Close()
 
 	domainDB := domain.DB{
@@ -49,11 +49,17 @@ func main() {
 		StatisticsRepo: postgres.NewStatisticsRepo(DB),
 	}
 
-	d := &domain.Domain{DB: domainDB}
+	// Connect to Redis DB
+	redisDB := redis.ConnectRedis()
+	domainRedisDB := domain.RedisDB{
+		RedisBooksRepo: redis.NewRedisBooksRepo(redisDB),
+	}
+
+	d := &domain.Domain{DB: domainDB, RedisDB: domainRedisDB}
 
 	r := handlers.SetupRouter(d)
 
-	err = http.ListenAndServe(fmt.Sprintf(":%s", /*"8080"*/ os.Getenv("PORT")), r)
+	err = http.ListenAndServe(fmt.Sprintf(":%s" /*"8080"*/, os.Getenv("PORT")), r)
 	if err != nil {
 		log.Fatalf("cannot start server %v", err)
 	}
