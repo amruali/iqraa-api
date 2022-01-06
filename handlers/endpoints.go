@@ -29,8 +29,12 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 		// Statistical Data
 		router.Route("/statistical", func(r chi.Router) {
 			r.Route("/books", func(r chi.Router) {
-				r.Use(s.IsCashed)
-				r.Get("/top_downloads", s.TopDownloads())
+				//r.Use(s.IsCashed)
+				r.Route("/top_downloads", func(r chi.Router) {
+					r.Use(s.IsCashed("top_downloads"))
+					r.Get("/", s.TopDownloads())
+				})
+
 			})
 		})
 

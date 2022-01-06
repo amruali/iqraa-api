@@ -11,7 +11,8 @@ func (s *Server) TopDownloads() http.HandlerFunc {
 			resposneWithJson(w, map[string]string{"error": "An error happened"}, http.StatusInternalServerError)
 			return
 		}
-		go s.domain.SetCashedTopDownloads(ToString(books))
+		key := r.Context().Value("top_downloads").(string)
+		go s.domain.SetCashedStrings(key, ToString(books))
 		resposneWithJson(w, books, http.StatusOK)
 	})
 }

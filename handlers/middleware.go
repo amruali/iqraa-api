@@ -83,6 +83,7 @@ func (s *Server) IsAdmin(next http.Handler) http.Handler {
 	})
 }
 
+/*
 func (s *Server) IsCashed(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		books, err := s.domain.GetCashedTopDownloads()
@@ -94,4 +95,24 @@ func (s *Server) IsCashed(next http.Handler) http.Handler {
 			next.ServeHTTP(w, r)
 		}
 	})
+}
+*/
+func (s *Server) IsCashed(Key string) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			switch Key {
+			case "top_downloads":
+				if books, err := s.domain.GetCashedStrings(Key); err == nil {
+					resposneWithJson(w, books, http.StatusOK)
+					return
+				} else {
+					log.Printf("data has not cashed yet")
+					ctx := context.WithValue(r.Context(), Key, Key)
+					next.ServeHTTP(w, r.WithContext(ctx))
+				}
+			default:
+				log.Println("enta developer t3ban")
+			}
+		})
+	}
 }

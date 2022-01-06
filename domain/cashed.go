@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 )
 
-func (d *Domain) GetCashedTopDownloads() ([]Book, error) {
-	cashedBookString, err := d.RedisDB.RedisBooksRepo.GetTopDownloads()
+func (d *Domain) GetCashedStrings(key string) ([]Book, error) {
+	cashedBookString, err := d.RedisDB.RedisBooksRepo.GetStrings(key)
 	if err != nil {
 		return nil, ErrDataIsNotCashed
 	}
@@ -17,8 +17,8 @@ func (d *Domain) GetCashedTopDownloads() ([]Book, error) {
 	return books, nil
 }
 
-func (d *Domain) SetCashedTopDownloads(stringifiedBooks string) error {
-	err := d.RedisDB.RedisBooksRepo.SetTopDownloads(stringifiedBooks)
+func (d *Domain) SetCashedStrings(key, value string) error {
+	err := d.RedisDB.RedisBooksRepo.SetStrings(key, value)
 	if err != nil {
 		return err
 	}

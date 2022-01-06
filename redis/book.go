@@ -8,8 +8,7 @@ import (
 )
 
 var (
-	topDownloadsKey = "top_downloads"
-	ctx             = context.Background()
+	ctx = context.Background()
 )
 
 type RedisBooksRepo struct {
@@ -20,16 +19,16 @@ func NewRedisBooksRepo(RedisDB *redis.Client) *RedisBooksRepo {
 	return &RedisBooksRepo{RedisDB: RedisDB}
 }
 
-func (r *RedisBooksRepo) GetTopDownloads() (string, error) {
-	booksString, err := r.RedisDB.Get(ctx, topDownloadsKey).Result()
+func (r *RedisBooksRepo) GetStrings(key string) (string, error) {
+	booksString, err := r.RedisDB.Get(ctx, key).Result()
 	if err != nil {
 		return "", err
 	}
 	return booksString, err
 }
 
-func (r *RedisBooksRepo) SetTopDownloads(value string) error {
-	if err := r.RedisDB.Set(ctx, topDownloadsKey, value, time.Duration(time.Hour*24*7)).Err(); err != nil {
+func (r *RedisBooksRepo) SetStrings(key, value string) error {
+	if err := r.RedisDB.Set(ctx, key, value, time.Duration(time.Hour*24*7)).Err(); err != nil {
 		return err
 	}
 	return nil

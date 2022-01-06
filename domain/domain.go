@@ -49,8 +49,8 @@ type QuoteRepo interface {
 // Next Redis DataInterfaces
 
 type RedisBooksRepo interface {
-	GetTopDownloads() (string, error)
-	SetTopDownloads(value string) error
+	GetStrings(key string) (string, error)
+	SetStrings(key, value string) error
 }
 
 type RedisDB struct {
