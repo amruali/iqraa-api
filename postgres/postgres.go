@@ -1,16 +1,15 @@
 package postgres
 
 import (
-	"log"
-
 	"github.com/go-pg/pg/v9"
 	_ "github.com/lib/pq"
 )
 
-func New(opts *pg.Options) *pg.DB {
-	db := pg.Connect(opts)
-	if db == nil {
-		log.Fatal("Cannot Connect to DB")
+func ConnectPostgres(DB_URI string) *pg.DB {
+	opt, err := pg.ParseURL(DB_URI)
+	if err != nil {
+		panic(err)
 	}
-	return db
+	DB := pg.Connect(opt)
+	return DB
 }
