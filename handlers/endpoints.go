@@ -43,7 +43,11 @@ func (s *Server) setupEndpoints(router *chi.Mux) {
 			r.Post("/login", s.Login())
 			r.Post("/register", s.Register())
 
-			r.Route("/{username}/reviews", func(r chi.Router) {
+			r.Route("/{username}", func(r chi.Router) {
+				r.Get("/", s.GetProfile())
+				r.Route("/reviews", func(r chi.Router) {
+
+				})
 				//r.Get("/", s.UserReviews())
 			})
 		})
