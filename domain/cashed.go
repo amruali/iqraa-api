@@ -4,17 +4,15 @@ import (
 	"encoding/json"
 )
 
-func (d *Domain) GetCashedStrings(key string) ([]Book, error) {
+func (d *Domain) GetCashedStrings(key string, dataType interface{}) (interface{}, error) {
 	cashedBookString, err := d.RedisDB.RedisBooksRepo.GetStrings(key)
 	if err != nil {
 		return nil, ErrDataIsNotCashed
 	}
 
-	books := []Book{}
-	b := []byte(cashedBookString)
-	_ = json.Unmarshal(b, &books)
+	data := GetCustomizedType(cashedBookString, dataType)
 
-	return books, nil
+	return data, nil
 }
 
 func (d *Domain) SetCashedStrings(key, value string) error {
@@ -23,4 +21,10 @@ func (d *Domain) SetCashedStrings(key, value string) error {
 		return err
 	}
 	return nil
+}
+
+func GetCustomizedType(key string, dataType interface{}) interface{} {
+	b := []byte(key)
+	_ = json.Unmarshal(b, &dataType)
+	return dataType
 }
