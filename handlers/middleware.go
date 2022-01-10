@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"iqraa-api/domain"
 	"log"
 	"net/http"
 	"os"
@@ -102,7 +103,7 @@ func (s *Server) IsCashed(Key string) func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			switch Key {
 			case "top_downloads":
-				if books, err := s.domain.GetCashedStrings(Key); err == nil {
+				if books, err := s.domain.GetCashedStrings(Key, []domain.Book{}); err == nil {
 					resposneWithJson(w, books, http.StatusOK)
 					return
 				} else {
