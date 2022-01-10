@@ -8,16 +8,30 @@ import (
 )
 
 type User struct {
-	Id             int64     `json:"user_id"`
-	Username       string    `json:"username"`
-	Email          string    `json:"email"`
-	HashedPassword []byte    `json:"-"`
-	UserTypeID     int8      `json:"user_type_id"`
-	CreatedAt      time.Time `json:"created_at"`
-	UpdatedAt      time.Time `json:"updated_at"`
-	FirstName      string    `json:"first_name"`
-	LastName       string    `json:"last_name"`
-	Image          string    `json:"image"`
+	Id             int64                  `json:"user_id"`
+	Username       string                 `json:"username"`
+	Email          string                 `json:"email"`
+	EmailConfirmed string                 `json:"email_confirmed"`
+	HashedPassword []byte                 `json:"-"`
+	UserTypeID     int8                   `json:"user_type_id"`
+	CreatedAt      time.Time              `json:"created_at"`
+	UpdatedAt      time.Time              `json:"updated_at"`
+	FirstName      string                 `json:"first_name"`
+	LastName       string                 `json:"last_name"`
+	Image          string                 `json:"image"`
+	Settings       map[string]interface{} `json:"likes"`
+}
+
+type Profile struct {
+	Username   string                 `json:"username"`
+	Email      string                 `json:"email"`
+	UserTypeID int8                   `json:"user_type_id"`
+	CreatedAt  time.Time              `json:"created_at"`
+	UpdatedAt  time.Time              `json:"updated_at"`
+	FirstName  string                 `json:"first_name"`
+	LastName   string                 `json:"last_name"`
+	Image      string                 `json:"image"`
+	Settings   map[string]interface{} `json:"likes"`
 }
 
 type JwtToken struct {
@@ -33,6 +47,7 @@ func (u *User) GenerateJwtToken() (*JwtToken, error) {
 	jwtToken.Claims = jwt.MapClaims{
 		"id":       u.Id,
 		"username": u.Username,
+		"role":     u.UserTypeID,
 		"exp":      expiresAt.Unix(),
 	}
 
@@ -53,4 +68,23 @@ func (d *Domain) GetUserByUserID(id int64) (*User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (d *Domain) GetUserInfo(username string) (*Profile, error) {
+	user, err := d.DB.UserRepo.GetByUserName(username)
+	if err != nil {
+		return nil, err
+	}
+
+	userProfile := &Profile{
+		Username:   user.Email,
+		Email:      user.Email,
+		UserTypeID: user.UserTypeID,
+		CreatedAt:  user.CreatedAt,
+		FirstName:  user.FirstName,
+		LastName:   user.LastName,
+		Image:      user.Image,
+		Settings:   user.Settings,
+	}
+	return userProfile, nil
 }

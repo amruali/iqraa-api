@@ -4,7 +4,7 @@ type UserRepo interface {
 	GetByID(id int64) (*User, error)
 	GetByUserName(username string) (*User, error)
 	GetByEmail(email string) (*User, error)
-	Create(email, username string, Password []byte) (*User, error)
+	Create(user *User) (*User, error)
 }
 
 type BookRepo interface {
@@ -16,6 +16,9 @@ type BookRepo interface {
 	GetByYear(year int32) ([]Book, error)
 	GetByISBN(isbn string) (*Book, error)
 	GetByName(bookName string) (*Book, error)
+	Delete(bookID int64) error
+	UpdateByID(book *Book) error
+	GetByID(bookID int64) (*Book, error)
 	Create(book *Book) (*Book, error)
 }
 
@@ -34,13 +37,24 @@ type ReviewRepo interface {
 }
 
 type StatisticsRepo interface {
-	GetByMostDownloadable(count int) ([]Book, error)
+	GetByTopDownloaded(count int) ([]Book, error)
 }
 
 type QuoteRepo interface {
 	Create(quote *Quote) (*Quote, error)
 	GetByID(quoteID uint32) (*Quote, error)
 	GetByBookID(quoteID uint32) ([]Quote, error)
+}
+
+// Next Redis DataInterfaces
+
+type RedisBooksRepo interface {
+	GetStrings(key string) (string, error)
+	SetStrings(key, value string) error
+}
+
+type RedisDB struct {
+	RedisBooksRepo RedisBooksRepo
 }
 
 type DB struct {
@@ -53,5 +67,6 @@ type DB struct {
 }
 
 type Domain struct {
-	DB DB
+	DB      DB
+	RedisDB RedisDB
 }

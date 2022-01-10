@@ -2,6 +2,7 @@ package domain
 
 import (
 	"errors"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -61,11 +62,22 @@ func (d *Domain) Register(payload RegisterPayload) (*User, error) {
 
 	// create New User
 
-	user, err := d.DB.UserRepo.Create(payload.Email, payload.Username, hashedPassword)
+	user := &User{
+		Email:          payload.Email,
+		Username:       payload.Username,
+		HashedPassword: hashedPassword,
+		UserTypeID:     3,
+		FirstName:      payload.FirstName,
+		LastName:       payload.LastName,
+		CreatedAt:      time.Now(),
+		UpdatedAt:      time.Now(),
+	}
+
+	registeredUser, err := d.DB.UserRepo.Create(user)
 	if err != nil {
 		return nil, err
 	}
-	return user, nil
+	return registeredUser, nil
 }
 
 type LoginPayload struct {

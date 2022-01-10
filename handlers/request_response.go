@@ -63,3 +63,8 @@ func forbiddenResponse(w http.ResponseWriter) {
 	response := map[string]string{"error": "Forbidden"}
 	resposneWithJson(w, response, http.StatusForbidden)
 }
+
+func ToString(value interface{}) string {
+	bytes, _ := json.Marshal(value)
+	return string(bytes)
+}

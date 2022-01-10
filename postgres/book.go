@@ -39,6 +39,31 @@ func (b *BookRepo) Create( /*name, isbn string, year int32*/ book *domain.Book) 
 	return book, nil
 }
 
+func (b *BookRepo) Delete(bookID int64) error {
+	book := &domain.Book{}
+	_, err := b.DB.Model(book).
+		Where("id = ?", bookID).
+		Delete()
+
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (b *BookRepo) GetByID(bookID int64) (*domain.Book, error) {
+	book := &domain.Book{}
+
+	err := b.DB.Model(book).Where("id = ?", bookID).First()
+	if err != nil {
+		if errors.Is(err, pg.ErrNoRows) {
+			return nil, domain.ErrBookIsNotFound
+		}
+		return nil, err
+	}
+	return book, nil
+}
+
 func (b *BookRepo) GetByName(BookName string) (*domain.Book, error) {
 	book := &domain.Book{}
 	err := b.DB.Model(book).Where("book_name = ?", BookName).First()
@@ -70,7 +95,7 @@ func (b *BookRepo) GetByAuthorName(authorName string) ([]domain.Book, error) {
 	err := b.DB.Model(&books).
 		ColumnExpr("book.*").
 		//ColumnExpr("a.id AS author__id, a.full_name AS author__name").
-		Join("JOIN authors a"). 
+		Join("JOIN authors a").
 		JoinOn("a.id = book.book_author_id").
 		JoinOn("a.full_name = ?", authorName).
 		Select()
@@ -122,14 +147,13 @@ func (b *BookRepo) GetByYear(year int32) ([]domain.Book, error) {
 	return books, nil
 }
 
-
 // Get Books By Publisher Name
 func (b *BookRepo) GetByPublisherName(PublisherName string) ([]domain.Book, error) {
 	books := []domain.Book{}
 	err := b.DB.Model(&books).
 		ColumnExpr("book.*").
 		//ColumnExpr("a.id AS author__id, a.full_name AS author__name").
-		Join("JOIN publisher p"). 
+		Join("JOIN publisher p").
 		JoinOn("p.publisher_id = book.publisher_id").
 		JoinOn("p.publishing_house_name = ?", PublisherName).
 		Select()
@@ -141,8 +165,6 @@ func (b *BookRepo) GetByPublisherName(PublisherName string) ([]domain.Book, erro
 	}
 	return books, nil
 }
-
-
 
 // Get Books Between two years
 func (b *BookRepo) GetByEra(from, to int32) ([]domain.Book, error) {
@@ -158,6 +180,44 @@ func (b *BookRepo) GetByEra(from, to int32) ([]domain.Book, error) {
 		return nil, err
 	}
 	return books, nil
+}
+
+func (b *BookRepo) UpdateByID(book *domain.Book) error {
+	/*
+		values := map[string]interface{}{
+			"book_name":           book.BookName,
+			"isbn":                book.ISBN,
+			"publish_year":        book.PublishYear,
+			"publisher_id":        book.PublisherID,
+			"book_author_id":      book.BookAuthorID,
+			"book_type_id":        book.BookTypeID,
+			"book_type_detail_id": book.BookTypeDetailID,
+			"update_user_id":      book.UpdateUserID,
+			"updated_at":          book.UpdatedAt,
+		}
+		_, err := b.DB.Model(&values).
+			TableExpr("books").
+			Where("id = ?", book.ID).
+			Update()
+	*/
+
+	_, err := b.DB.Model(book).
+		Set("book_name = ? ", book.BookName).
+		Set("isbn = ?", book.ISBN).
+		Set("publish_year = ? ", book.PublishYear).
+		Set("publisher_id = ?", book.PublisherID).
+		Set("book_author_id = ?", book.BookAuthorID).
+		Set("book_type_id = ?", book.BookTypeID).
+		Set("book_type_detail_id = ?", book.BookTypeDetailID).
+		Set("update_user_id = ?", book.UpdateUserID).
+		Set("updated_at = ?", book.UpdatedAt).
+		Set("brief = ?", book.Brief).
+		Where("id = ?id").
+		Update()
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 /*
