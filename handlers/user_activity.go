@@ -27,7 +27,7 @@ func (s *Server) GetProfile() http.HandlerFunc {
 				return
 			}
 			resposneWithJson(w, user, http.StatusOK)
-			s.domain.SetCashedStrings(username, ToString(user))
+			go s.domain.SetCashedStrings(username, ToString(user))
 		}
 	})
 }

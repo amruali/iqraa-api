@@ -11,15 +11,15 @@ var (
 	ctx = context.Background()
 )
 
-type RedisBooksRepo struct {
+type RedisStringsRepo struct {
 	RedisDB *redis.Client
 }
 
-func NewRedisBooksRepo(RedisDB *redis.Client) *RedisBooksRepo {
-	return &RedisBooksRepo{RedisDB: RedisDB}
+func NewRedisStringsRepo(RedisDB *redis.Client) *RedisStringsRepo {
+	return &RedisStringsRepo{RedisDB: RedisDB}
 }
 
-func (r *RedisBooksRepo) GetStrings(key string) (string, error) {
+func (r *RedisStringsRepo) GetStrings(key string) (string, error) {
 	booksString, err := r.RedisDB.Get(ctx, key).Result()
 	if err != nil {
 		return "", err
@@ -27,7 +27,7 @@ func (r *RedisBooksRepo) GetStrings(key string) (string, error) {
 	return booksString, err
 }
 
-func (r *RedisBooksRepo) SetStrings(key, value string) error {
+func (r *RedisStringsRepo) SetStrings(key, value string) error {
 	if err := r.RedisDB.Set(ctx, key, value, time.Duration(time.Hour*24*7)).Err(); err != nil {
 		return err
 	}

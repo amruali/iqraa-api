@@ -40,7 +40,7 @@ func main() {
 	defer redisDB.Close()
 
 	domainRedisDB := domain.RedisDB{
-		RedisBooksRepo: redis.NewRedisBooksRepo(redisDB),
+		RedisStringsRepo: redis.NewRedisStringsRepo(redisDB),
 	}
 
 	d := &domain.Domain{DB: domainDB, RedisDB: domainRedisDB}
