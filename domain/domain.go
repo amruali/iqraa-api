@@ -48,13 +48,13 @@ type QuoteRepo interface {
 
 // Next Redis DataInterfaces
 
-type RedisBooksRepo interface {
+type RedisStringsRepo interface {
 	GetStrings(key string) (string, error)
 	SetStrings(key, value string) error
 }
 
 type RedisDB struct {
-	RedisBooksRepo RedisBooksRepo
+	RedisStringsRepo RedisStringsRepo
 }
 
 type DB struct {

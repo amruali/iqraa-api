@@ -5,7 +5,7 @@ import (
 )
 
 func (d *Domain) GetCashedStrings(key string, dataType interface{}) (interface{}, error) {
-	cashedBookString, err := d.RedisDB.RedisBooksRepo.GetStrings(key)
+	cashedBookString, err := d.RedisDB.RedisStringsRepo.GetStrings(key)
 	if err != nil {
 		return nil, ErrDataIsNotCashed
 	}
@@ -16,7 +16,7 @@ func (d *Domain) GetCashedStrings(key string, dataType interface{}) (interface{}
 }
 
 func (d *Domain) SetCashedStrings(key, value string) error {
-	err := d.RedisDB.RedisBooksRepo.SetStrings(key, value)
+	err := d.RedisDB.RedisStringsRepo.SetStrings(key, value)
 	if err != nil {
 		return err
 	}
