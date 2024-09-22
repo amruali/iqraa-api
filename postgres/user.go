@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"iqraa-api/domain"
-
-	"github.com/go-pg/pg/v9"
+	"iqraa-api/models"
+	"github.com/go-pg/pg/v10"
 )
 
 type UserRepo struct {
@@ -16,8 +16,8 @@ func NewUserRepo(DB *pg.DB) *UserRepo {
 	return &UserRepo{DB: DB}
 }
 
-func (u *UserRepo) GetByEmail(email string) (*domain.User, error) {
-	var user = new(domain.User)
+func (u *UserRepo) GetByEmail(email string) (*models.User, error) {
+	var user = new(models.User)
 
 	fmt.Println(11)
 	// Check that email is taken
@@ -35,8 +35,8 @@ func (u *UserRepo) GetByEmail(email string) (*domain.User, error) {
 	return user, nil
 }
 
-func (u *UserRepo) GetByUserName(username string) (*domain.User, error) {
-	var user = &domain.User{}
+func (u *UserRepo) GetByUserName(username string) (*models.User, error) {
+	var user = &models.User{}
 
 	// Check if username is taken
 	err := u.DB.Model(user).Where("username = ?", username).First()
@@ -50,8 +50,8 @@ func (u *UserRepo) GetByUserName(username string) (*domain.User, error) {
 	return user, nil
 }
 
-func (u *UserRepo) GetByID(id int64) (*domain.User, error) {
-	user := &domain.User{}
+func (u *UserRepo) GetByID(id int64) (*models.User, error) {
+	user := &models.User{}
 	err := u.DB.Model(user).Where("id = ?", id).First()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
@@ -66,7 +66,7 @@ func (u *UserRepo) GetByID(id int64) (*domain.User, error) {
 	return user, nil
 }
 
-func (u *UserRepo) Create(user *domain.User) (*domain.User, error) {
+func (u *UserRepo) Create(user *models.User) (*models.User, error) {
 	_, err := u.DB.Model(user).Returning("*").Insert()
 	if err != nil {
 		return nil, err
