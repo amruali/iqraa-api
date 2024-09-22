@@ -1,49 +1,53 @@
 package domain
 
+import (
+	"iqraa-api/models"
+)
+
 type UserRepo interface {
-	GetByID(id int64) (*User, error)
-	GetByUserName(username string) (*User, error)
-	GetByEmail(email string) (*User, error)
-	Create(user *User) (*User, error)
+	GetByID(id int64) (*models.User, error)
+	GetByUserName(username string) (*models.User, error)
+	GetByEmail(email string) (*models.User, error)
+	Create(user *models.User) (*models.User, error)
 }
 
 type BookRepo interface {
-	GetByEra(from, to int32) ([]Book, error)
-	GetByPublisherName(PublisherName string) ([]Book, error)
-	GetByAuthorName(authorName string) ([]Book, error)
-	GetByAuthorID(AuthorID int32) ([]Book, error)
-	GetByPublisherID(PublisherID int32) ([]Book, error)
-	GetByYear(year int32) ([]Book, error)
-	GetByISBN(isbn string) (*Book, error)
-	GetByName(bookName string) (*Book, error)
+	GetByEra(from, to int32) ([]models.Book, error)
+	GetByPublisherName(PublisherName string) ([]models.Book, error)
+	GetByAuthorName(authorName string) ([]models.Book, error)
+	GetByAuthorID(AuthorID int32) ([]models.Book, error)
+	GetByPublisherID(PublisherID int32) ([]models.Book, error)
+	GetByYear(year int32) ([]models.Book, error)
+	GetByISBN(isbn string) (*models.Book, error)
+	GetByName(bookName string) (*models.Book, error)
 	Delete(bookID int64) error
-	UpdateByID(book *Book) error
-	GetByID(bookID int64) (*Book, error)
-	Create(book *Book) (*Book, error)
+	UpdateByID(book *models.Book) error
+	GetByID(bookID int64) (*models.Book, error)
+	Create(book *models.Book) (*models.Book, error)
 }
 
 type AuthorRepo interface {
 	//GetByID(id int64) (*Author, error)
-	GetByName(AuthorName string) (*Author, error)
-	Create(author *Author) (*Author, error)
+	GetByName(AuthorName string) (*models.Author, error)
+	Create(author *models.Author) (*models.Author, error)
 }
 
 type ReviewRepo interface {
-	Create(review *Review) (*Review, error)
-	GetByID(reviewID int32) (*Review, error)
-	GetByBookID(bookID int32) ([]Review, error)
-	GetByBookName(bookName string) ([]Review, error)
-	GetByUserID(userID int32) ([]Review, error)
+	Create(review *models.Review) (*models.Review, error)
+	GetByID(reviewID int32) (*models.Review, error)
+	GetByBookID(bookID int32) ([]models.Review, error)
+	GetByBookName(bookName string) ([]models.Review, error)
+	GetByUserID(userID int32) ([]models.Review, error)
 }
 
 type StatisticsRepo interface {
-	GetByTopDownloaded(count int) ([]Book, error)
+	GetByTopDownloaded(count int) ([]models.Book, error)
 }
 
 type QuoteRepo interface {
-	Create(quote *Quote) (*Quote, error)
-	GetByID(quoteID uint32) (*Quote, error)
-	GetByBookID(quoteID uint32) ([]Quote, error)
+	Create(quote *models.Quote) (*models.Quote, error)
+	GetByID(quoteID uint32) (*models.Quote, error)
+	GetByBookID(quoteID uint32) ([]models.Quote, error)
 }
 
 // Next Redis DataInterfaces
