@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"errors"
-	"iqraa-api/domain"
+	"iqraa-api/models"
 
-	"github.com/go-pg/pg/v9"
+	"github.com/go-pg/pg/v10"
 )
 
 type AuthorRepo struct {
@@ -26,7 +26,7 @@ func NewAuthorRepo(DB *pg.DB) *AuthorRepo {
 // Get Top #N Authors By their Dowloadable Books IN Book Type ID, Type Detail
 // Get Top #N Authors By their Dowloadable Books
 
-func (a *AuthorRepo) Create(author *domain.Author) (*domain.Author, error) {
+func (a *AuthorRepo) Create(author *models.Author) (*models.Author, error) {
 	_, err := a.DB.Model(author).Returning("*").Insert()
 	if err != nil {
 		return nil, err
@@ -34,12 +34,12 @@ func (a *AuthorRepo) Create(author *domain.Author) (*domain.Author, error) {
 	return author, nil
 }
 
-func (a *AuthorRepo) GetByName(AuthorName string) (*domain.Author, error) {
-	author := &domain.Author{}
+func (a *AuthorRepo) GetByName(AuthorName string) (*models.Author, error) {
+	author := &models.Author{}
 	err := a.DB.Model(author).Where("full_name = ?", AuthorName).First()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}

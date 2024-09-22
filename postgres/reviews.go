@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"iqraa-api/domain"
+	"iqraa-api/models"
 
-	"github.com/go-pg/pg/v9"
+	"github.com/go-pg/pg/v10"
 )
 
 type ReviewRepo struct {
@@ -15,7 +15,7 @@ func NewReviewRepo(DB *pg.DB) *ReviewRepo {
 }
 
 // Create
-func (r *ReviewRepo) Create(review *domain.Review) (*domain.Review, error) {
+func (r *ReviewRepo) Create(review *models.Review) (*models.Review, error) {
 
 	_, err := r.DB.Model(review).Returning("*").Insert()
 	if err != nil {
@@ -26,8 +26,8 @@ func (r *ReviewRepo) Create(review *domain.Review) (*domain.Review, error) {
 }
 
 // GetByID
-func (r *ReviewRepo) GetByID(reviewID int32) (*domain.Review, error) {
-	review := &domain.Review{}
+func (r *ReviewRepo) GetByID(reviewID int32) (*models.Review, error) {
+	review := &models.Review{}
 	err := r.DB.Model(review).
 		Where("review_id = ?", reviewID).
 		Select()
@@ -38,8 +38,8 @@ func (r *ReviewRepo) GetByID(reviewID int32) (*domain.Review, error) {
 }
 
 // GetByBookID
-func (r *ReviewRepo) GetByBookID(bookID int32) ([]domain.Review, error) {
-	reviews := []domain.Review{}
+func (r *ReviewRepo) GetByBookID(bookID int32) ([]models.Review, error) {
+	reviews := []models.Review{}
 	err := r.DB.Model(&reviews).
 		Where("book_id = ?", bookID).
 		Select()
@@ -50,8 +50,8 @@ func (r *ReviewRepo) GetByBookID(bookID int32) ([]domain.Review, error) {
 }
 
 // GetByBookName
-func (r *ReviewRepo) GetByBookName(bookName string) ([]domain.Review, error) {
-	reviews := []domain.Review{}
+func (r *ReviewRepo) GetByBookName(bookName string) ([]models.Review, error) {
+	reviews := []models.Review{}
 	err := r.DB.Model(&reviews).
 		ColumnExpr("review.*").
 		//ColumnExpr("a.id AS author__id, a.full_name AS author__name").
@@ -66,8 +66,8 @@ func (r *ReviewRepo) GetByBookName(bookName string) ([]domain.Review, error) {
 }
 
 // GetByUserID
-func (r *ReviewRepo) GetByUserID(userID int32) ([]domain.Review, error) {
-	reviews := []domain.Review{}
+func (r *ReviewRepo) GetByUserID(userID int32) ([]models.Review, error) {
+	reviews := []models.Review{}
 	err := r.DB.Model(&reviews).
 		Where("create_user_id = (?)", userID).
 		Select()

@@ -2,9 +2,9 @@ package postgres
 
 import (
 	"errors"
-	"iqraa-api/domain"
+	"iqraa-api/models"
 
-	"github.com/go-pg/pg/v9"
+	"github.com/go-pg/pg/v10"
 )
 
 type StatisticsRepo struct {
@@ -16,18 +16,18 @@ func NewStatisticsRepo(DB *pg.DB) *StatisticsRepo {
 }
 
 // Get Top sorted descending Downloadable #N Books
-func (s *StatisticsRepo) GetByTopDownloaded(count int) ([]domain.Book, error) {
+func (s *StatisticsRepo) GetByTopDownloaded(count int) ([]models.Book, error) {
 	if count == -1 {
 		count = 5
 	}
-	books := []domain.Book{}
+	books := []models.Book{}
 	err := s.DB.Model(&books).
 		Order("downloads_number DESC").
 		Limit(count).
 		Select()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}

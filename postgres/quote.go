@@ -1,9 +1,9 @@
 package postgres
 
 import (
-	"iqraa-api/domain"
+	"iqraa-api/models"
 
-	"github.com/go-pg/pg/v9"
+	"github.com/go-pg/pg/v10"
 )
 
 type QuoteRepo struct {
@@ -14,7 +14,7 @@ func NewQuoteRepo(DB *pg.DB) *QuoteRepo {
 	return &QuoteRepo{DB: DB}
 }
 
-func (q *QuoteRepo) Create(quote *domain.Quote) (*domain.Quote, error) {
+func (q *QuoteRepo) Create(quote *models.Quote) (*models.Quote, error) {
 	_, err := q.DB.Model(quote).
 		Returning("*").
 		Insert()
@@ -24,8 +24,8 @@ func (q *QuoteRepo) Create(quote *domain.Quote) (*domain.Quote, error) {
 	return quote, nil
 }
 
-func (q *QuoteRepo) GetByID(quoteID uint32) (*domain.Quote, error) {
-	quote := &domain.Quote{}
+func (q *QuoteRepo) GetByID(quoteID uint32) (*models.Quote, error) {
+	quote := &models.Quote{}
 	err := q.DB.Model(quote).
 		Where("id = ?", quoteID).
 		Select()
@@ -36,8 +36,8 @@ func (q *QuoteRepo) GetByID(quoteID uint32) (*domain.Quote, error) {
 	return quote, nil
 }
 
-func (q *QuoteRepo) GetByBookID(quoteID uint32) ([]domain.Quote, error) {
-	quotes := []domain.Quote{}
+func (q *QuoteRepo) GetByBookID(quoteID uint32) ([]models.Quote, error) {
+	quotes := []models.Quote{}
 	err := q.DB.Model(&quotes).
 		Where("book_id = ?", quoteID).
 		Select()

@@ -2,10 +2,9 @@ package postgres
 
 import (
 	"errors"
+	"iqraa-api/models"
 
-	"iqraa-api/domain"
-
-	"github.com/go-pg/pg/v9"
+	"github.com/go-pg/pg/v10"
 )
 
 type BookRepo struct {
@@ -16,9 +15,9 @@ func NewBookRepo(DB *pg.DB) *BookRepo {
 	return &BookRepo{DB: DB}
 }
 
-func (b *BookRepo) Create( /*name, isbn string, year int32*/ book *domain.Book) (*domain.Book, error) {
+func (b *BookRepo) Create( /*name, isbn string, year int32*/ book *models.Book) (*models.Book, error) {
 	/*
-		book := &domain.Book{
+		book := &models.Book{
 			BookName:         name,
 			ISBN:             isbn,
 			PublishYear:      year,
@@ -40,7 +39,7 @@ func (b *BookRepo) Create( /*name, isbn string, year int32*/ book *domain.Book) 
 }
 
 func (b *BookRepo) Delete(bookID int64) error {
-	book := &domain.Book{}
+	book := &models.Book{}
 	_, err := b.DB.Model(book).
 		Where("id = ?", bookID).
 		Delete()
@@ -51,25 +50,25 @@ func (b *BookRepo) Delete(bookID int64) error {
 	return nil
 }
 
-func (b *BookRepo) GetByID(bookID int64) (*domain.Book, error) {
-	book := &domain.Book{}
+func (b *BookRepo) GetByID(bookID int64) (*models.Book, error) {
+	book := &models.Book{}
 
 	err := b.DB.Model(book).Where("id = ?", bookID).First()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrBookIsNotFound
+			return nil, ErrBookIsNotFound
 		}
 		return nil, err
 	}
 	return book, nil
 }
 
-func (b *BookRepo) GetByName(BookName string) (*domain.Book, error) {
-	book := &domain.Book{}
+func (b *BookRepo) GetByName(BookName string) (*models.Book, error) {
+	book := &models.Book{}
 	err := b.DB.Model(book).Where("book_name = ?", BookName).First()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}
@@ -77,12 +76,12 @@ func (b *BookRepo) GetByName(BookName string) (*domain.Book, error) {
 	return book, nil
 }
 
-func (b *BookRepo) GetByISBN(isbn string) (*domain.Book, error) {
-	book := &domain.Book{}
+func (b *BookRepo) GetByISBN(isbn string) (*models.Book, error) {
+	book := &models.Book{}
 	err := b.DB.Model(book).Where("isbn = ?", isbn).First()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}
@@ -90,8 +89,8 @@ func (b *BookRepo) GetByISBN(isbn string) (*domain.Book, error) {
 }
 
 // Get Books By Author Name
-func (b *BookRepo) GetByAuthorName(authorName string) ([]domain.Book, error) {
-	books := []domain.Book{}
+func (b *BookRepo) GetByAuthorName(authorName string) ([]models.Book, error) {
+	books := []models.Book{}
 	err := b.DB.Model(&books).
 		ColumnExpr("book.*").
 		//ColumnExpr("a.id AS author__id, a.full_name AS author__name").
@@ -101,7 +100,7 @@ func (b *BookRepo) GetByAuthorName(authorName string) ([]domain.Book, error) {
 		Select()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}
@@ -109,12 +108,12 @@ func (b *BookRepo) GetByAuthorName(authorName string) ([]domain.Book, error) {
 }
 
 // Get Books By Author ID
-func (b *BookRepo) GetByAuthorID(AuthorID int32) ([]domain.Book, error) {
-	books := []domain.Book{}
+func (b *BookRepo) GetByAuthorID(AuthorID int32) ([]models.Book, error) {
+	books := []models.Book{}
 	err := b.DB.Model(&books).Where("book_author_id = (?)", AuthorID).Select()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}
@@ -122,12 +121,12 @@ func (b *BookRepo) GetByAuthorID(AuthorID int32) ([]domain.Book, error) {
 }
 
 // Get Books By Publisher ID
-func (b *BookRepo) GetByPublisherID(PublisherID int32) ([]domain.Book, error) {
-	books := []domain.Book{}
+func (b *BookRepo) GetByPublisherID(PublisherID int32) ([]models.Book, error) {
+	books := []models.Book{}
 	err := b.DB.Model(&books).Where("publisher_id IN (?)", PublisherID).Select()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}
@@ -135,12 +134,12 @@ func (b *BookRepo) GetByPublisherID(PublisherID int32) ([]domain.Book, error) {
 }
 
 // Get Books Published In Specific Year
-func (b *BookRepo) GetByYear(year int32) ([]domain.Book, error) {
-	books := []domain.Book{}
+func (b *BookRepo) GetByYear(year int32) ([]models.Book, error) {
+	books := []models.Book{}
 	err := b.DB.Model(&books).Where("publish_year = (?)", year).Select()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}
@@ -148,8 +147,8 @@ func (b *BookRepo) GetByYear(year int32) ([]domain.Book, error) {
 }
 
 // Get Books By Publisher Name
-func (b *BookRepo) GetByPublisherName(PublisherName string) ([]domain.Book, error) {
-	books := []domain.Book{}
+func (b *BookRepo) GetByPublisherName(PublisherName string) ([]models.Book, error) {
+	books := []models.Book{}
 	err := b.DB.Model(&books).
 		ColumnExpr("book.*").
 		//ColumnExpr("a.id AS author__id, a.full_name AS author__name").
@@ -159,7 +158,7 @@ func (b *BookRepo) GetByPublisherName(PublisherName string) ([]domain.Book, erro
 		Select()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}
@@ -167,22 +166,22 @@ func (b *BookRepo) GetByPublisherName(PublisherName string) ([]domain.Book, erro
 }
 
 // Get Books Between two years
-func (b *BookRepo) GetByEra(from, to int32) ([]domain.Book, error) {
-	books := []domain.Book{}
+func (b *BookRepo) GetByEra(from, to int32) ([]models.Book, error) {
+	books := []models.Book{}
 	err := b.DB.Model(&books).
 		Where("publish_year >= ?", from).
 		Where("publish_year <= ?", to).
 		Select()
 	if err != nil {
 		if errors.Is(err, pg.ErrNoRows) {
-			return nil, domain.ErrNoResult
+			return nil, ErrNoResult
 		}
 		return nil, err
 	}
 	return books, nil
 }
 
-func (b *BookRepo) UpdateByID(book *domain.Book) error {
+func (b *BookRepo) UpdateByID(book *models.Book) error {
 	/*
 		values := map[string]interface{}{
 			"book_name":           book.BookName,
@@ -224,7 +223,7 @@ func (b *BookRepo) UpdateByID(book *domain.Book) error {
 
 // Get Books By Type ID
 // Get Books By Type Detail ID
-func (b *BookRepo) GetByTypeAndTypeDetail(typeID, typeDetailID int32) ([]*domain.Book, error) {
+func (b *BookRepo) GetByTypeAndTypeDetail(typeID, typeDetailID int32) ([]*models.Book, error) {
 	query := ""
 	if typeID != -1 {
 		query += ""
@@ -237,8 +236,8 @@ func (b *BookRepo) GetByTypeAndTypeDetail(typeID, typeDetailID int32) ([]*domain
 */
 
 /*
-//book := &domain.Book{}
-	books := []domain.Book{}
+//book := &models.Book{}
+	books := []models.Book{}
 
 	//YearBooks := b.DB.Model(book).ColumnExpr("publish_year").Where("publish_year = ?", 1)
 	//err := b.DB.Model(&books).Where("publish_year IN (?)", YearBooks).Select()
