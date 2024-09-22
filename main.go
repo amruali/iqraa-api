@@ -24,7 +24,19 @@ func main() {
 
 	// Connet to Postgres DB
 	DB := postgres.ConnectPostgres(os.Getenv("DB_URI"))
+
 	defer DB.Close()
+
+	err := postgres.TestDBConnection(DB)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	/* in case of having no dump - this was for creating DB tables using models */
+	// err = postgres.RecreateSchema(DB)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
 
 	domainDB := domain.DB{
 		UserRepo:       postgres.NewUserRepo(DB),
@@ -47,7 +59,7 @@ func main() {
 
 	r := handlers.SetupRouter(d)
 
-	err := http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), r)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", os.Getenv("PORT")), r)
 	if err != nil {
 		log.Fatalf("cannot start server %v", err)
 	}
