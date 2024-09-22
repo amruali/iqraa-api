@@ -2,45 +2,14 @@ package domain
 
 import (
 	"errors"
+	"iqraa-api/dtos"
+	"iqraa-api/models"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
 
-type RegisterPayload struct {
-	Email           string `json:"email"`
-	Password        string `json:"password"`
-	ConfirmPassword string `json:"confirm_password"`
-	Username        string `json:"username"`
-	FirstName       string `json:"first_name"`
-	LastName        string `json:"last_name"`
-}
-
-func (payload *RegisterPayload) IsValid() (bool, map[string]string) {
-	v := NewValidator()
-
-	v.MustBeNotEmpty("email", payload.Email)
-	v.MustBeValidEmail("email", payload.Email)
-
-	v.MustBeNotEmpty("username", payload.Username)
-	v.MustBeLongerThan("username", payload.Username, 4)
-
-	v.MustBeNotEmpty("first_name", payload.FirstName)
-	v.MustBeLongerThan("first_name", payload.FirstName, 3)
-
-	v.MustBeNotEmpty("last_name", payload.LastName)
-	v.MustBeLongerThan("last_name", payload.LastName, 3)
-
-	v.MustBeNotEmpty("password", payload.Password)
-	v.MustBeLongerThan("password", payload.Password, 8)
-
-	v.MustBeNotEmpty("confirm_password", payload.ConfirmPassword)
-	v.MustMatchPasswordAndConfrimPassword("password", payload.Password, payload.ConfirmPassword)
-
-	return v.IsValid(), v.errors
-}
-
-func (d *Domain) Register(payload RegisterPayload) (*User, error) {
+func (d *Domain) Register(payload dtos.RegisterPayload) (*models.User, error) {
 
 	// Check that email is not taken
 	userExist, _ := d.DB.UserRepo.GetByEmail(payload.Email)
@@ -61,8 +30,7 @@ func (d *Domain) Register(payload RegisterPayload) (*User, error) {
 	}
 
 	// create New User
-
-	user := &User{
+	user := &models.User{
 		Email:          payload.Email,
 		Username:       payload.Username,
 		HashedPassword: hashedPassword,
@@ -80,26 +48,7 @@ func (d *Domain) Register(payload RegisterPayload) (*User, error) {
 	return registeredUser, nil
 }
 
-type LoginPayload struct {
-	UserName string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-func (l *LoginPayload) IsValid() (bool, map[string]string) {
-	v := NewValidator()
-
-	//v.MustBeNotEmpty("username", l.UserName)
-
-	v.MustBeNotEmpty("email", l.Email)
-	v.MustBeValidEmail("email", l.Email)
-
-	v.MustBeNotEmpty("password", l.Password)
-
-	return v.IsValid(), v.errors
-}
-
-func (d *Domain) Login(payload LoginPayload) (*User, error) {
+func (d *Domain) Login(payload dtos.LoginPayload) (*models.User, error) {
 	user, err := d.DB.UserRepo.GetByEmail(payload.Email)
 	if err != nil {
 		return nil, ErrInvalidCredentials
