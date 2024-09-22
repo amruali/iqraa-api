@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"iqraa-api/domain"
+	"iqraa-api/dtos"
 	"net/http"
 	"strconv"
 
@@ -10,7 +10,7 @@ import (
 
 // Add Upload pdf file // Cover
 func (s *Server) CreateBook() http.HandlerFunc {
-	var payload domain.CreateBookPayload
+	var payload dtos.CreateBookPayload
 	return ValidatePayload(func(w http.ResponseWriter, r *http.Request) {
 		book, err := s.domain.CreateBook(payload)
 		if err != nil {
@@ -23,7 +23,7 @@ func (s *Server) CreateBook() http.HandlerFunc {
 
 // Update Book - Edit book info
 func (s *Server) UpdateBook() http.HandlerFunc {
-	var payload domain.UpdateBookPayload
+	var payload dtos.UpdateBookPayload
 	return ValidatePayload(func(w http.ResponseWriter, r *http.Request) {
 		bookID := chi.URLParam(r, "book_id")
 		id, err := strconv.ParseInt(bookID, 10, 64)

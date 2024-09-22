@@ -2,15 +2,21 @@ package handlers
 
 import (
 	"context"
-	"iqraa-api/domain"
+	"iqraa-api/models"
 	"log"
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
 )
+
+type JwtToken struct {
+	AccessToken string    `json:"token"`
+	ExpiresAt   time.Time `json:"expires_at`
+}
 
 func stripBearerPrefixToken(token string) (string, error) {
 	bearer := "BEARER"
@@ -28,6 +34,30 @@ var authHeaderExtractor = &request.PostExtractionFilter{
 
 var authExtractor = &request.MultiExtractor{
 	authHeaderExtractor,
+}
+
+func GenerateJwtToken(u *models.User) (*JwtToken, error) {
+
+	jwtToken := jwt.New(jwt.GetSigningMethod("HS256"))
+
+	expiresAt := time.Now().Add(time.Hour * 24 * 7) // a Single Week
+
+	jwtToken.Claims = jwt.MapClaims{
+		"id":       u.Id,
+		"username": u.Username,
+		"role":     u.UserTypeID,
+		"exp":      expiresAt.Unix(),
+	}
+
+	accessToken, err := jwtToken.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	if err != nil {
+		return nil, err
+	}
+
+	return &JwtToken{
+		AccessToken: accessToken,
+		ExpiresAt:   expiresAt,
+	}, nil
 }
 
 func ParseToken(r *http.Request) (*jwt.Token, error) {
@@ -85,25 +115,25 @@ func (s *Server) IsAdmin(next http.Handler) http.Handler {
 }
 
 /*
-func (s *Server) IsCashed(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		books, err := s.domain.GetCashedTopDownloads()
-		if err == nil {
-			resposneWithJson(w, books, http.StatusOK)
-			return
-		} else {
-			log.Printf("redis failed to return data because %v", err)
-			next.ServeHTTP(w, r)
-		}
-	})
-}
+	func (s *Server) IsCashed(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			books, err := s.domain.GetCashedTopDownloads()
+			if err == nil {
+				resposneWithJson(w, books, http.StatusOK)
+				return
+			} else {
+				log.Printf("redis failed to return data because %v", err)
+				next.ServeHTTP(w, r)
+			}
+		})
+	}
 */
 func (s *Server) IsCashed(Key string) func(next http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			switch Key {
 			case "top_downloads":
-				if books, err := s.domain.GetCashedStrings(Key, []domain.Book{}); err == nil {
+				if books, err := s.domain.GetCashedStrings(Key, []models.Book{}); err == nil {
 					resposneWithJson(w, books, http.StatusOK)
 					return
 				} else {

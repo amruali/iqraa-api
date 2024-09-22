@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"iqraa-api/domain"
+	"iqraa-api/dtos"
 	"log"
 	"net/http"
 
@@ -16,7 +16,7 @@ func (s *Server) GetProfile() http.HandlerFunc {
 			resposneWithJson(w, map[string]string{"error": "username is required"}, http.StatusBadRequest)
 		}
 
-		if user, err := s.domain.GetCashedStrings(username, domain.Profile{}); err == nil {
+		if user, err := s.domain.GetCashedStrings(username, dtos.Profile{}); err == nil {
 			resposneWithJson(w, user, http.StatusOK)
 			return
 		} else {

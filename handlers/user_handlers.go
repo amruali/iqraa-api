@@ -3,7 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"fmt"
-	"iqraa-api/domain"
+	"iqraa-api/dtos"
 	"net/http"
 )
 
@@ -23,8 +23,9 @@ func (s *Server) SampleAllUserBooks(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) Register() http.HandlerFunc {
-	var payload domain.RegisterPayload
+	var payload dtos.RegisterPayload
 	return ValidatePayload(func(w http.ResponseWriter, r *http.Request) {
+
 		user, err := s.domain.Register(payload)
 		if err != nil {
 			fmt.Println(err)
@@ -33,7 +34,7 @@ func (s *Server) Register() http.HandlerFunc {
 		}
 
 		// Generate Token
-		token, err := user.GenerateJwtToken()
+		token, err := GenerateJwtToken(user)
 		if err != nil {
 			BadRequest(w, err)
 			return
@@ -47,16 +48,18 @@ func (s *Server) Register() http.HandlerFunc {
 }
 
 func (s *Server) Login() http.HandlerFunc {
-	var payload domain.LoginPayload
+	var payload dtos.LoginPayload
 	return ValidatePayload(func(w http.ResponseWriter, r *http.Request) {
+
 		user, err := s.domain.Login(payload)
+
 		if err != nil {
 			BadRequest(w, err)
 			return
 		}
 
 		// Generate Token
-		token, err := user.GenerateJwtToken()
+		token, err := GenerateJwtToken(user)
 		if err != nil {
 			BadRequest(w, err)
 			return
@@ -66,6 +69,7 @@ func (s *Server) Login() http.HandlerFunc {
 			User:  user,
 			Token: token,
 		}, http.StatusOK)
+
 	}, &payload)
 
 }

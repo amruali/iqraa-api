@@ -3,14 +3,14 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"iqraa-api/domain"
+	"iqraa-api/models"
 	"net/http"
 )
 
 type (
 	authenticationResponse struct {
-		User  *domain.User     `json:"user"`
-		Token *domain.JwtToken `json:"token"`
+		User  *models.User     `json:"user"`
+		Token *JwtToken `json:"token"`
 	}
 	PayloadValidation interface {
 		IsValid() (bool, map[string]string)
